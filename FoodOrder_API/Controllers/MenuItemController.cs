@@ -3,6 +3,7 @@ using FoodOrder_API.Models;
 using FoodOrder_API.Models.Dto;
 using FoodOrder_API.Services;
 using FoodOrder_API.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,7 @@ namespace FoodOrder_API.Controllers
             _response = new ApiResponse();
         }
 
-
+        [Authorize]
         [HttpGet]
         [Route("menuitems")]
         public async Task<IActionResult> GetMenuItems()
@@ -73,7 +74,7 @@ namespace FoodOrder_API.Controllers
                     {
                         _response.HttpStatusCode = HttpStatusCode.BadRequest;
                         _response.IsSuccess = false;
-                        return BadRequest();
+                        return BadRequest(_response);
                     }
                     string fileName = $"{Guid.NewGuid()}{Path.GetExtension(menuItemCreateDto.File.FileName)}";
                     MenuItem menuItemToCreate = new()
@@ -119,7 +120,7 @@ namespace FoodOrder_API.Controllers
                     {
                         _response.HttpStatusCode = HttpStatusCode.BadRequest;
                         _response.IsSuccess = false;
-                        return BadRequest();
+                        return BadRequest(_response);
                     }
 
                     MenuItem menuItemFromDb = await _context.MenuItems.FindAsync(id);
@@ -127,7 +128,7 @@ namespace FoodOrder_API.Controllers
                     {
                         _response.HttpStatusCode = HttpStatusCode.BadRequest;
                         _response.IsSuccess = false;
-                        return BadRequest();
+                        return BadRequest(_response);
                     }
 
                     menuItemFromDb.Name = menuItemUpdateDto.Name ?? menuItemFromDb.Name;
@@ -178,7 +179,7 @@ namespace FoodOrder_API.Controllers
                 {
                     _response.HttpStatusCode = HttpStatusCode.BadRequest;
                     _response.IsSuccess = false;
-                    return BadRequest();
+                    return BadRequest(_response);
                 }
 
                 MenuItem menuItemFromDb = await _context.MenuItems.FindAsync(id);
@@ -186,7 +187,7 @@ namespace FoodOrder_API.Controllers
                 {
                     _response.HttpStatusCode = HttpStatusCode.BadRequest;
                     _response.IsSuccess = false;
-                    return BadRequest();
+                    return BadRequest(_response);
                 }
 
                 // delete the file from blob storage
